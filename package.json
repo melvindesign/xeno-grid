@@ -1,0 +1,13 @@
+{
+  "name": "xeno-grid",
+  "version": "0.0.1",
+  "description": "Grid system",
+  "author": {
+    "name": "Melvin Ensellem",
+    "email": "melvin.ensellem@nebulr.io",
+    "url": "https://github.com/melvindesign"
+  },
+  "scripts": {
+    "watch": "sass --watch index.scss:index.css"
+  }
+}

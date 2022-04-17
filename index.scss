@@ -1,0 +1,191 @@
+@use "sass:map";
+
+grid {
+  display: grid;
+  overflow: auto;
+  height: 100vh;
+  grid-auto-rows: min-content;
+  -ms-grid-rows: min-content;
+  --grid-column-start: 1; /* column start */
+  --grid-column-end: -1; /* column end */
+
+  transition: padding-left 0.5s linear, padding-right 0.5s linear;
+  -moz-transition: padding-left 0.5s linear, padding-right 0.5s linear;
+  -webkit-transition: padding-left 0.5s linear, padding-right 0.5s linear;
+
+  & > * {
+    display: block;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+}
+
+@mixin columns($cols) {
+  grid-template-columns: repeat($cols, 1fr);
+  -ms-grid-columns: repeat($cols, 1fr);
+}
+
+@mixin connectedVar($name) {
+  & > *[col#{$name}] {
+    grid-column-end: span var(--grid-column-end);
+  }
+
+  & > *[col#{$name}*="+"],
+  & > *[col#{$name}*="-"],
+  & > *[col#{$name}*=".."] {
+    grid-column-start: var(--grid-column-start);
+  }
+
+  & > *[col#{$name}*="-"],
+  & > *[col#{$name}*=".."] {
+    grid-column-end: var(--grid-column-end);
+  }
+
+  & > *[col#{$name}="max"] {
+    grid-column: 1 / -1;
+  }
+}
+
+@mixin generateCol($columns, $suffix) {
+  @for $col from 1 through $columns {
+    & > *[col#{$suffix}^="#{$col}"] {
+      --grid-column-start: #{$col};
+    }
+
+    @if $col == 1 {
+      & > *[col#{$suffix}$="+#{$col}"],
+      & > *[col#{$suffix}="#{$col}"] {
+        --grid-column-end: #{$col};
+      }
+    } @else {
+      @if $col == $columns {
+        & > *[col#{$suffix}$="-#{$col}"] {
+          --grid-column-end: #{$col + 1};
+        }
+      } @else {
+        & > *[col#{$suffix}$="+#{$col}"],
+        & > *[col#{$suffix}$="-#{$col - 1}"],
+        & > *[col#{$suffix}="#{$col}"] {
+          --grid-column-end: #{$col};
+        }
+      }
+    }
+
+  }
+  @for $i from 2 through 4 {
+    & > *[col#{$suffix}="1/#{$i}"] {
+      --grid-column-end: #{calc(var(--columns) / $i)};
+      --grid-column-start: 1;
+    }
+  }
+
+  @for $i from 3 through 4 {
+    & > *[col#{$suffix}="2/#{$i}"] {
+      --grid-column-end: #{calc((var(--columns) * 2) / $i)};
+      --grid-column-start: 1;
+    }
+  }
+
+  & > *[col#{$suffix}="3/4"] {
+    --grid-column-end: #{calc((var(--columns) * 3) / 4)};
+    --grid-column-start: 1;
+  }
+}
+
+// DEFAULT SCREEN
+$default-columns: 12;
+$default-breakpoint: 0px;
+$default-column-gap: 24px;
+$default-row-gap: 24px;
+$default-padding: 24px;
+$default-suffix: "";
+grid {
+  --columns: #{$default-columns};
+  @include columns($default-columns);
+  @include connectedVar($default-suffix);
+  @include generateCol($default-columns, $default-suffix);
+  column-gap: $default-column-gap;
+  row-gap: $default-row-gap;
+  padding-left: $default-padding;
+  padding-right: $default-padding;
+}
+
+// MOBILE SCREEN
+$mobile-columns: 4;
+$mobile-breakpoint: 480px;
+$mobile-column-gap: 24px;
+$mobile-row-gap: 24px;
+$mobile-padding: 16pt;
+$mobile-suffix: "-sm";
+@media only screen and (min-width: $default-breakpoint) and (max-width: $mobile-breakpoint) {
+  grid {
+    --columns: #{$mobile-columns};
+    @include columns($mobile-columns);
+    @include connectedVar($mobile-suffix);
+    @include generateCol($mobile-columns, $mobile-suffix);
+    column-gap: $mobile-column-gap;
+    row-gap: $mobile-row-gap;
+    padding-left: $mobile-padding;
+    padding-right: $mobile-padding;
+  }
+}
+
+// TABLET SCREEN
+$tablet-columns: 8;
+$tablet-breakpoint: 768px;
+$tablet-column-gap: 24px;
+$tablet-row-gap: 24px;
+$tablet-padding: 24px;
+$tablet-suffix: "-lg";
+@media only screen and (min-width: $mobile-breakpoint) and (max-width: $tablet-breakpoint) {
+  grid {
+    --columns: #{$tablet-columns};
+    @include columns($tablet-columns);
+    @include connectedVar($tablet-suffix);
+    @include generateCol($tablet-columns, $tablet-suffix);
+    column-gap: $tablet-column-gap;
+    row-gap: $tablet-row-gap;
+    padding-left: $tablet-padding;
+    padding-right: $tablet-padding;
+  }
+}
+
+// LAPTOP SCREEN
+$laptop-columns: 12;
+$laptop-breakpoint: 1024px;
+$laptop-column-gap: 24px;
+$laptop-row-gap: 24px;
+$laptop-padding: 24px;
+$laptop-suffix: "-lg";
+@media only screen and (min-width: $tablet-breakpoint) and (max-width: $laptop-breakpoint) {
+  grid {
+    --columns: #{$laptop-columns};
+    @include columns($laptop-columns);
+    @include connectedVar($laptop-suffix);
+    @include generateCol($laptop-columns, $laptop-suffix);
+    column-gap: $laptop-column-gap;
+    row-gap: $laptop-row-gap;
+    padding-left: $laptop-padding;
+    padding-right: $laptop-padding;
+  }
+}
+
+// DESKTOP SCREEN
+$desktop-columns: 16;
+$desktop-breakpoint: 1200px;
+$desktop-column-gap: 24px;
+$desktop-row-gap: 24px;
+$desktop-padding: 24px;
+$desktop-suffix: "-xl";
+@media only screen and (min-width: $desktop-breakpoint) {
+  grid {
+    --columns: #{$desktop-columns};
+    @include columns($desktop-columns);
+    @include connectedVar($desktop-suffix);
+    @include generateCol($desktop-columns, $desktop-suffix);
+    column-gap: $desktop-column-gap;
+    row-gap: $desktop-row-gap;
+    padding-left: $desktop-padding;
+    padding-right: $desktop-padding;
+  }
+}
