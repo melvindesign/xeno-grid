@@ -132,7 +132,7 @@ $mobile-suffix: "-sm";
 
 // TABLET SCREEN
 $tablet-columns: 8;
-$tablet-breakpoint: 768px;
+$tablet-breakpoint: 1200px;
 $tablet-column-gap: 24px;
 $tablet-row-gap: 24px;
 $tablet-padding: 24px;
@@ -152,7 +152,7 @@ $tablet-suffix: "-lg";
 
 // LAPTOP SCREEN
 $laptop-columns: 12;
-$laptop-breakpoint: 1024px;
+$laptop-breakpoint: 1440px;
 $laptop-column-gap: 24px;
 $laptop-row-gap: 24px;
 $laptop-padding: 24px;
@@ -172,12 +172,11 @@ $laptop-suffix: "-lg";
 
 // DESKTOP SCREEN
 $desktop-columns: 16;
-$desktop-breakpoint: 1200px;
 $desktop-column-gap: 24px;
 $desktop-row-gap: 24px;
 $desktop-padding: 24px;
 $desktop-suffix: "-xl";
-@media only screen and (min-width: $desktop-breakpoint) {
+@media only screen and (min-width: #{$laptop-breakpoint + 1px}) {
   grid {
     --columns: #{$desktop-columns};
     @include columns($desktop-columns);
